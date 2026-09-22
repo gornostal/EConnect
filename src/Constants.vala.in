@@ -1,0 +1,4 @@
+namespace EConnect {
+    public const string APP_ID = "@APP_ID_RAW@";
+    public const string VERSION = "@VERSION_RAW@";
+}
