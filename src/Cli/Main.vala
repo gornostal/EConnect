@@ -1,5 +1,5 @@
 /*
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  *
  * econnect-cli: headless test driver for the core. Discovers devices, pairs
  * and pings from an interactive prompt.

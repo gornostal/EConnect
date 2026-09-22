@@ -1,5 +1,5 @@
 /*
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  *
  * Minimal DER walker: extracts the SubjectPublicKeyInfo from an X.509
  * certificate. Needed for the pairing verification code, which hashes the

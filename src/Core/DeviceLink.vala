@@ -1,5 +1,5 @@
 /*
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  *
  * One established, authenticated TLS connection to a remote device.
  * Reads newline-delimited packets and queues outgoing writes.

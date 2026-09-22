@@ -1,9 +1,11 @@
 /*
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  *
  * Pulls the newest photos and screenshots from an Android phone through the
  * KDE Connect SFTP plugin, mounting it with GVFS and caching thumbnails in
- * ~/.cache/<app>/gallery/<deviceId>/.
+ * ~/.cache/<app>/gallery/<deviceId>/. Needs the host gvfsd, which under Flatpak
+ * means --filesystem=xdg-run/gvfsd; without it the pull fails and the device
+ * page keeps working without a gallery.
  */
 namespace EConnect.App {
 
@@ -150,6 +152,12 @@ namespace EConnect.App {
                 try {
                     yield root.mount_enclosing_volume (MountMountFlags.NONE, op, null);
                 } catch (IOError e) {
+                    if (e is IOError.NOT_SUPPORTED) {
+                        /* No GVFS sftp backend reachable. Inside a Flatpak this
+                         * means the sandbox cannot see the host gvfsd. */
+                        throw new IOError.NOT_SUPPORTED (
+                            _("Cannot browse the phone: SFTP support is unavailable on this system."));
+                    }
                     if (!(e is IOError.ALREADY_MOUNTED)) {
                         throw e;
                     }

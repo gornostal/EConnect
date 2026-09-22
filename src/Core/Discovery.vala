@@ -1,5 +1,5 @@
 /*
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  *
  * UDP discovery on port 1716. Broadcasts our identity and reports identity
  * packets from other devices.

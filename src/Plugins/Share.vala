@@ -1,5 +1,5 @@
 /*
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  *
  * kdeconnect.share.request: files (as payload), text and URLs, both ways.
  */

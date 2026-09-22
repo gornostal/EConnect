@@ -1,5 +1,5 @@
 /*
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  *
  * LAN transport. Mirrors kdeconnect-kde's LanLinkProvider, protocol v8:
  *

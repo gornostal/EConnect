@@ -1,5 +1,5 @@
 /*
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  *
  * Persistent state:
  *   <config>/privateKey.pem, certificate.pem, deviceId, name

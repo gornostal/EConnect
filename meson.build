@@ -1,9 +1,9 @@
 project(
-    'io.github.agornostal.econnect',
+    'io.github.gornostal.econnect',
     'vala', 'c',
     version: '0.1.0',
     meson_version: '>= 0.61',
-    license: 'GPL-3.0-or-later',
+    license: 'MIT',
 )
 
 app_id = meson.project_name()
@@ -26,6 +26,7 @@ core_deps = [
     dependency('gio-2.0'),
     dependency('gio-unix-2.0'),
     dependency('json-glib-1.0'),
+    dependency('gnutls', version: '>= 3.6'),
     meson.get_compiler('vala').find_library('posix'),
 ]
 
@@ -41,7 +42,7 @@ constants_vala = configure_file(
     configuration: conf,
 )
 config_dep = declare_dependency(
-    include_directories: include_directories('.'),
+    include_directories: include_directories('.', 'src/Core'),
     sources: constants_vala,
 )
 

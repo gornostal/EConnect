@@ -1,4 +1,6 @@
 core_sources = files(
+    'vapi/econnect-certgen.vapi',
+    'Core/cert-gen.c',
     'Core/Packet.vala',
     'Core/Der.vala',
     'Core/DeviceInfo.vala',

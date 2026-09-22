@@ -1,5 +1,5 @@
 /*
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  *
  * kdeconnect.sftp: ask the phone to start its SFTP server and report the
  * credentials. Android only; the iOS app has no SFTP plugin.

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: MIT -->
+<component type="desktop-application">
+  <id>@APP_ID@</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+
+  <name>EConnect</name>
+  <summary>Share your clipboard, files and screenshots with your phone</summary>
+
+  <description>
+    <p>
+      EConnect links your computer and your phone over Wi-Fi, so the things you
+      copy, capture and download are never stuck on the wrong device. Pair once
+      by confirming a short code on both screens, and everything after that
+      happens with a click.
+    </p>
+    <p>It speaks the KDE Connect protocol, so the phone app you already have works with it unchanged.</p>
+    <ul>
+      <li>Copy text on one device and paste it on the other</li>
+      <li>Send files, links and notes in either direction</li>
+      <li>Take a screenshot and push it straight to your phone</li>
+      <li>Browse the newest photos and screenshots from an Android phone</li>
+    </ul>
+    <p>
+      Your devices talk directly to each other over your local network. Nothing
+      is uploaded to a server, and no account is needed.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">@APP_ID@.desktop</launchable>
+
+  <icon type="stock">@APP_ID@</icon>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/gornostal/EConnect/main/data/screenshots/devices.png</image>
+      <caption>Paired devices and everything recently shared</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/gornostal/EConnect/main/data/screenshots/pairing.png</image>
+      <caption>Confirming a pairing code</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/gornostal/EConnect/main/data/screenshots/gallery.png</image>
+      <caption>The newest photos from a phone</caption>
+    </screenshot>
+  </screenshots>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#8cd5ff</color>
+    <color type="primary" scheme_preference="dark">#0d52bf</color>
+  </branding>
+
+  <developer id="io.github.gornostal">
+    <name>Oleksandr Gornostal</name>
+  </developer>
+  <update_contact>agornostal_AT_star.global</update_contact>
+
+  <url type="homepage">https://github.com/gornostal/EConnect</url>
+  <url type="bugtracker">https://github.com/gornostal/EConnect/issues</url>
+  <url type="help">https://github.com/gornostal/EConnect#readme</url>
+  <url type="vcs-browser">https://github.com/gornostal/EConnect</url>
+
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+
+  <categories>
+    <category>Utility</category>
+  </categories>
+
+  <keywords>
+    <keyword>phone</keyword>
+    <keyword>android</keyword>
+    <keyword>clipboard</keyword>
+    <keyword>share</keyword>
+    <keyword>screenshot</keyword>
+  </keywords>
+
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="@VERSION@" date="2026-09-22">
+      <description>
+        <p>First release.</p>
+        <ul>
+          <li>Pair with phones on the same network and confirm the code on both screens</li>
+          <li>Two-way clipboard, file, link and text sharing</li>
+          <li>Send a screenshot to a paired phone</li>
+          <li>Preview the newest photos and screenshots from an Android phone</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+</component>

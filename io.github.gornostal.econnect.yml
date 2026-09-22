@@ -1,0 +1,39 @@
+# Flatpak manifest used by AppCenter to build and distribute EConnect.
+# Build it the same way locally with:
+#   flatpak-builder --user --install --force-clean build-flatpak io.github.gornostal.econnect.yml
+id: io.github.gornostal.econnect
+runtime: io.elementary.Platform
+runtime-version: '8.2'
+sdk: io.elementary.Sdk
+command: io.github.gornostal.econnect
+
+finish-args:
+  # Windowing and rendering.
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+
+  # Devices are discovered over UDP 1716 and talk over TCP 1716-1764 on the
+  # local network. Without host networking the app cannot see any phone.
+  - --share=network
+
+  # Files arriving from a phone are written to the Downloads folder. Sending
+  # files goes through the file chooser portal, so no other filesystem access
+  # is needed. Taking a screenshot uses the screenshot portal.
+  - --filesystem=xdg-download
+
+  # Browsing an Android phone's photos mounts its SFTP server through the host
+  # GVFS daemon. Dropping these two only costs the gallery preview.
+  - --filesystem=xdg-run/gvfsd
+  - --talk-name=org.gtk.vfs.*
+
+modules:
+  - name: econnect
+    buildsystem: meson
+    config-opts:
+      # The headless test tool is a development aid, not part of the app.
+      - -Dcli=false
+    sources:
+      - type: dir
+        path: .

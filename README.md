@@ -15,7 +15,7 @@ A small GTK4/Granite app for elementary OS that talks the KDE Connect protocol, 
 Dependencies (elementary OS 8 / Ubuntu):
 
 ```sh
-sudo apt install meson valac libgtk-4-dev libgranite-7-dev libjson-glib-dev openssl
+sudo apt install meson valac libgtk-4-dev libgranite-7-dev libjson-glib-dev libgnutls28-dev
 ```
 
 Build and install:
@@ -26,4 +26,4 @@ ninja -C build
 sudo ninja -C build install
 ```
 
-Run with `io.github.agornostal.econnect`, or from the applications menu. A headless test tool, `econnect-cli`, is built alongside it.
+Run with `io.github.gornostal.econnect`, or from the applications menu. A headless test tool, `econnect-cli`, is built alongside it.

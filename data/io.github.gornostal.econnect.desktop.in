@@ -2,9 +2,10 @@
 Name=EConnect
 Comment=Share clipboard, files and screenshots with your phone
 Exec=@APP_ID@
-Icon=phone
+Icon=@APP_ID@
 Terminal=false
 Type=Application
-Categories=Network;Utility;
-Keywords=phone;kdeconnect;continuity;clipboard;share;
+Categories=Utility;
+Keywords=phone;continuity;clipboard;share;screenshot;
 StartupNotify=true
+X-GNOME-UsesNotifications=true

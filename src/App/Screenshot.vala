@@ -1,5 +1,5 @@
 /*
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  *
  * Take a screenshot through the org.freedesktop.portal.Screenshot portal.
  */

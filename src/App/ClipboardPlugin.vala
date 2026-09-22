@@ -1,5 +1,5 @@
 /*
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  *
  * kdeconnect.clipboard: text-only clipboard sync via Gdk.Clipboard.
  */

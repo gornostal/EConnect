@@ -1,5 +1,5 @@
 /*
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  *
  * Per-device log of received items (text, URLs, files), persisted as JSON in
  * <config>/history/<deviceId>.json. Feeds the "recent images" preview.
