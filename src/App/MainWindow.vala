@@ -14,7 +14,9 @@ namespace EConnect.App {
         private HashTable<string, DevicePage> pages = new HashTable<string, DevicePage> (str_hash, str_equal);
 
         public MainWindow (Application app) {
-            Object (application: app, app: app, title: _("EConnect"), default_width: 900, default_height: 600);
+            Object (application: app, app: app, title: _("EConnect"),
+                    default_width: 900, default_height: 600,
+                    width_request: 720, height_request: 420);
         }
 
         construct {

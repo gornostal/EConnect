@@ -40,11 +40,17 @@ namespace EConnect.App {
 
             /* ---- header ---- */
             var icon = new Gtk.Image.from_icon_name (device.device_type.icon_name ()) { pixel_size = 48 };
-            var name = new Gtk.Label (device.name) { halign = Gtk.Align.START };
+            var name = new Gtk.Label (device.name) {
+                halign = Gtk.Align.START,
+                ellipsize = Pango.EllipsizeMode.END
+            };
             name.add_css_class (Granite.STYLE_CLASS_H1_LABEL);
-            status_label = new Gtk.Label ("") { halign = Gtk.Align.START };
+            status_label = new Gtk.Label ("") {
+                halign = Gtk.Align.START,
+                ellipsize = Pango.EllipsizeMode.END
+            };
             status_label.add_css_class (Granite.STYLE_CLASS_DIM_LABEL);
-            var title_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 3) { valign = Gtk.Align.CENTER };
+            var title_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 3) { valign = Gtk.Align.CENTER, hexpand = true };
             title_box.append (name);
             title_box.append (status_label);
 
@@ -57,8 +63,6 @@ namespace EConnect.App {
             var header = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 12);
             header.append (icon);
             header.append (title_box);
-            var spacer = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) { hexpand = true };
-            header.append (spacer);
             header.append (pair_button);
             header.append (unpair_button);
             content.append (header);
@@ -122,13 +126,20 @@ namespace EConnect.App {
             images_header.append (images_refresh);
             content.append (images_header);
             images_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 12);
+            /* Only the gallery scrolls sideways; the rest of the page keeps a fixed minimum width. */
+            var images_scroll = new Gtk.ScrolledWindow () {
+                child = images_box,
+                hscrollbar_policy = Gtk.PolicyType.AUTOMATIC,
+                vscrollbar_policy = Gtk.PolicyType.NEVER,
+                propagate_natural_height = true
+            };
             images_empty = new Gtk.Label (Plugins.Sftp.supported_by (device)
                 ? _("The newest photos and screenshots on %s will show up here.").printf (device.name)
                 : _("Images shared from %s will show up here.").printf (device.name)) {
                 halign = Gtk.Align.START
             };
             images_empty.add_css_class (Granite.STYLE_CLASS_DIM_LABEL);
-            content.append (images_box);
+            content.append (images_scroll);
             content.append (images_empty);
 
             /* ---- received items ---- */
@@ -267,6 +278,7 @@ namespace EConnect.App {
                 };
                 button.add_css_class (Granite.STYLE_CLASS_FLAT);
                 button.clicked.connect (() => open_item (item));
+                make_draggable (button, item.value, picture);
                 images_box.append (button);
             }
         }
@@ -276,21 +288,49 @@ namespace EConnect.App {
         }
 
         private void open_item (Core.HistoryItem item) {
-            var launcher = new Gtk.UriLauncher (item.kind == Core.HistoryKind.FILE
-                ? File.new_for_path (item.value).get_uri ()
-                : item.value);
             if (item.kind == Core.HistoryKind.TEXT) {
                 Gdk.Display.get_default ().get_clipboard ().set_text (item.value);
                 toast (_("Copied to clipboard"));
                 return;
             }
-            launcher.launch.begin (get_root () as Gtk.Window, null, (o, res) => {
+            if (item.kind == Core.HistoryKind.FILE && !item.file_exists) {
+                toast (_("%s no longer exists").printf (Path.get_basename (item.value)));
+                return;
+            }
+            string uri = item.kind == Core.HistoryKind.FILE
+                ? File.new_for_path (item.value).get_uri ()
+                : item.value;
+            /* Gtk.UriLauncher reports "The application launch failed" on Pantheon even
+             * though GIO can launch the handler fine, so go through GIO directly. */
+            var context = get_display ().get_app_launch_context ();
+            AppInfo.launch_default_for_uri_async.begin (uri, context, null, (o, res) => {
                 try {
-                    launcher.launch.end (res);
+                    AppInfo.launch_default_for_uri_async.end (res);
                 } catch (Error e) {
-                    toast (e.message);
+                    toast (_("Could not open %s: %s").printf (Path.get_basename (item.value), e.message));
                 }
             });
+        }
+
+        /** Lets a file be dragged out of the window into other applications. */
+        public static void make_draggable (Gtk.Widget widget, string path, Gtk.Widget? icon_source) {
+            var source = new Gtk.DragSource () { actions = Gdk.DragAction.COPY };
+            source.prepare.connect ((x, y) => {
+                var file = File.new_for_path (path);
+                if (!file.query_exists ()) {
+                    return null;
+                }
+                if (icon_source != null) {
+                    source.set_icon (new Gtk.WidgetPaintable (icon_source), (int) x, (int) y);
+                }
+                var value = Value (typeof (File));
+                value.set_object (file);
+                return new Gdk.ContentProvider.union ({
+                    new Gdk.ContentProvider.for_value (new Gdk.FileList.from_array ({ file })),
+                    new Gdk.ContentProvider.for_value (value)
+                });
+            });
+            widget.add_controller (source);
         }
 
         /* ---- actions ---- */
@@ -412,6 +452,7 @@ namespace EConnect.App {
                 halign = Gtk.Align.START,
                 hexpand = true,
                 ellipsize = Pango.EllipsizeMode.END,
+                width_chars = 10,
                 max_width_chars = 60
             };
             box.append (label);
@@ -426,6 +467,9 @@ namespace EConnect.App {
             box.append (time_label);
             child = box;
             activatable = true;
+            if (item.kind == Core.HistoryKind.FILE) {
+                DevicePage.make_draggable (this, item.value, null);
+            }
         }
     }
 }
