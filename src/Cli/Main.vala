@@ -118,7 +118,7 @@ namespace EConnect.Cli {
                 var d = pick (words);
                 if (d != null && words.length > 2) {
                     var f = File.new_for_commandline_arg (words[2]);
-                    share.send_file.begin (d, f, null, (obj, res) => {
+                    share.send_file.begin (d, f, null, null, (obj, res) => {
                         try {
                             share.send_file.end (res);
                             print ("\nFile sent.\n> ");

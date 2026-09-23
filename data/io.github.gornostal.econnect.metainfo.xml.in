@@ -21,6 +21,7 @@
       <li>Send files, links and notes in either direction</li>
       <li>Take a screenshot and push it straight to your phone</li>
       <li>Browse the newest photos and screenshots from an Android phone</li>
+      <li>Keep track of everything you sent and received in one list</li>
     </ul>
     <p>
       Your devices talk directly to each other over your local network. Nothing
@@ -95,6 +96,7 @@
           <li>Two-way clipboard, file, link and text sharing</li>
           <li>Send a screenshot to a paired phone</li>
           <li>Preview the newest photos and screenshots from an Android phone</li>
+          <li>An Activity list of everything sent and received, with per-file progress</li>
         </ul>
       </description>
     </release>

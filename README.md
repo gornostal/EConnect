@@ -9,6 +9,7 @@ A small GTK4/Granite app for elementary OS that talks the KDE Connect protocol, 
 - Send and receive files, links and text
 - Take a screenshot and send it to the phone
 - Preview of the newest photos and screenshots from the phone
+- Activity list of everything sent and received, with per-file progress and drag-and-drop sending
 
 ## Build and install
 

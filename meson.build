@@ -46,5 +46,11 @@ config_dep = declare_dependency(
     sources: constants_vala,
 )
 
+gresources = gnome.compile_resources(
+    'econnect-resources',
+    'data' / app_id + '.gresource.xml',
+    source_dir: 'data',
+)
+
 subdir('src')
 subdir('data')

@@ -6,6 +6,9 @@
  */
 namespace EConnect.Core {
 
+    /** Reports how many payload bytes have been written so far. */
+    public delegate void ProgressFunc (int64 done, int64 total);
+
     public class DeviceLink : Object {
         public const uint16 MIN_PAYLOAD_PORT = 1739;
         public const uint16 MAX_PAYLOAD_PORT = 1764;
@@ -157,7 +160,8 @@ namespace EConnect.Core {
          * for the peer to fetch the bytes.
          */
         public async void send_payload_packet (Packet packet, InputStream data, int64 size,
-                                               Cancellable? cancel = null) throws Error {
+                                               Cancellable? cancel = null,
+                                               ProgressFunc? progress = null) throws Error {
             var listener = new SocketListener ();
             uint16 port = 0;
             for (uint16 candidate = MIN_PAYLOAD_PORT; candidate <= MAX_PAYLOAD_PORT; candidate++) {
@@ -214,8 +218,30 @@ namespace EConnect.Core {
             server_tls.authentication_mode = TlsAuthenticationMode.REQUIRED;
             server_tls.accept_certificate.connect ((cert, errors) => accept_peer (cert));
             yield server_tls.handshake_async (Priority.DEFAULT, cancel);
-            yield server_tls.output_stream.splice_async (
-                data, OutputStreamSpliceFlags.CLOSE_SOURCE, Priority.DEFAULT, cancel);
+            /* Copy by hand rather than splice so the caller can show progress. */
+            var output = server_tls.output_stream;
+            var buffer = new uint8[65536];
+            int64 done = 0;
+            try {
+                while (true) {
+                    ssize_t n = yield data.read_async (buffer, Priority.DEFAULT, cancel);
+                    if (n <= 0) {
+                        break;
+                    }
+                    size_t written;
+                    yield output.write_all_async (buffer[0:n], Priority.DEFAULT, cancel, out written);
+                    done += n;
+                    if (progress != null) {
+                        progress (done, size);
+                    }
+                }
+            } finally {
+                try {
+                    data.close ();
+                } catch (Error e) {
+                    debug ("closing payload source: %s", e.message);
+                }
+            }
             yield server_tls.close_async (Priority.DEFAULT, cancel);
         }
     }

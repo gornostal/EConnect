@@ -1,0 +1,505 @@
+/*
+ * SPDX-License-Identifier: MIT
+ *
+ * Every color comes from the system stylesheet (@accent_color, @success_color,
+ * @fg_color…), so the app follows the accent color and the light or dark
+ * style chosen in System Settings.
+ */
+
+/* ---- type ---- */
+
+.device-title {
+    font-size: 20pt;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+.section-title {
+    font-size: 12pt;
+    font-weight: 700;
+}
+
+.group-label,
+.day-label {
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: alpha(@fg_color, 0.5);
+}
+
+.group-label {
+    padding: 12px 10px 4px 10px;
+}
+
+.day-label {
+    padding: 14px 10px 4px 10px;
+}
+
+.accent-text {
+    color: @accent_color;
+}
+
+/* ---- device avatar with a status dot ---- */
+
+.device-tile {
+    min-width: 38px;
+    min-height: 38px;
+    border-radius: 11px;
+    background-color: alpha(@fg_color, 0.07);
+    color: alpha(@fg_color, 0.7);
+}
+
+.device-tile.large {
+    min-width: 60px;
+    min-height: 60px;
+    border-radius: 17px;
+}
+
+.device-tile.connected {
+    background-color: alpha(@accent_color, 0.16);
+    color: @accent_color;
+}
+
+.device-tile.offline image {
+    opacity: 0.45;
+}
+
+.status-dot {
+    min-width: 9px;
+    min-height: 9px;
+    margin: 4px;
+    border-radius: 99px;
+    background-color: alpha(@fg_color, 0.35);
+}
+
+.status-dot.large {
+    min-width: 12px;
+    min-height: 12px;
+    margin: 6px;
+}
+
+.status-dot.connected {
+    background-color: @success_color;
+}
+
+.status-dot.available {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 2px @success_color;
+}
+
+.status-dot.pairing {
+    background-color: @warning_color;
+    animation: blink 1.2s ease-in-out infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0.35; }
+}
+
+/* ---- status pill ---- */
+
+.pill {
+    padding: 1px 9px;
+    border-radius: 99px;
+    font-size: 9pt;
+    font-weight: 600;
+    background-color: alpha(@fg_color, 0.08);
+    color: alpha(@fg_color, 0.75);
+}
+
+.pill.connected {
+    background-color: alpha(@success_color, 0.16);
+    color: mix(@success_color, @fg_color, 0.25);
+}
+
+.pill.pairing {
+    background-color: alpha(@warning_color, 0.2);
+    color: mix(@warning_color, @fg_color, 0.45);
+}
+
+/* ---- sidebar ---- */
+
+.device-list {
+    background: transparent;
+    padding: 4px 8px;
+}
+
+.device-list > row {
+    padding: 7px 8px;
+    margin: 1px 0;
+    border-radius: 11px;
+}
+
+.device-list > row:hover {
+    background-color: alpha(@fg_color, 0.05);
+}
+
+.device-list > row:selected {
+    background-color: @base_color;
+    color: @fg_color;
+    box-shadow: 0 1px 2px alpha(black, 0.08), 0 0 0 1px alpha(@fg_color, 0.08);
+}
+
+.device-list > row:selected label {
+    color: inherit;
+}
+
+.device-list > row:selected .dim-label {
+    color: alpha(@fg_color, 0.6);
+}
+
+.device-list .busy,
+.device-list > row:selected .busy {
+    color: @accent_color;
+}
+
+.searching {
+    padding: 7px 16px;
+    color: alpha(@fg_color, 0.5);
+}
+
+.mini-radar {
+    min-width: 36px;
+    min-height: 36px;
+    border-radius: 11px;
+    border: 1px dashed alpha(@fg_color, 0.25);
+}
+
+.mini-radar > box {
+    min-width: 8px;
+    min-height: 8px;
+    border-radius: 99px;
+    background-color: @accent_color;
+    animation: pulse-small 1.6s ease-out infinite;
+}
+
+@keyframes pulse-small {
+    from { box-shadow: 0 0 0 0 alpha(@accent_color, 0.5); }
+    to { box-shadow: 0 0 0 12px alpha(@accent_color, 0); }
+}
+
+.me-card {
+    margin: 10px;
+    padding: 8px 6px 8px 10px;
+    border-radius: 12px;
+    background-color: @base_color;
+    border: 1px solid alpha(@fg_color, 0.08);
+}
+
+.me-card .me-icon {
+    min-width: 32px;
+    min-height: 32px;
+    border-radius: 9px;
+    background-color: alpha(@fg_color, 0.07);
+    color: alpha(@fg_color, 0.7);
+}
+
+.me-card editablelabel {
+    font-weight: 600;
+}
+
+/* ---- composer: the one raised object on the page ---- */
+
+.composer {
+    background-color: @base_color;
+    border-radius: 16px;
+    border: 1px solid alpha(@fg_color, 0.12);
+    box-shadow: 0 1px 2px alpha(black, 0.05), 0 10px 28px -18px alpha(black, 0.3);
+}
+
+.composer-body {
+    padding: 16px;
+}
+
+.composer.locked .composer-body {
+    opacity: 0.45;
+}
+
+.composer-entry {
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 10px;
+    font-size: 11pt;
+}
+
+.composer-send {
+    min-height: 40px;
+    padding: 0 18px;
+    border-radius: 10px;
+}
+
+.composer-entry:focus-within {
+    box-shadow: 0 0 0 3px alpha(@accent_color, 0.25);
+}
+
+.composer .lock {
+    padding: 12px 16px;
+    border-radius: 15px 15px 0 0;
+    border-bottom: 1px solid alpha(@fg_color, 0.08);
+    background-color: alpha(@fg_color, 0.04);
+}
+
+.composer .lock.warn {
+    background-color: alpha(@warning_color, 0.14);
+}
+
+.composer .lock.warn image {
+    color: mix(@warning_color, @fg_color, 0.35);
+}
+
+.clip-line image {
+    color: @accent_color;
+}
+
+/* ---- transfers ---- */
+
+.transfers {
+    padding: 12px 14px;
+    border-radius: 14px;
+    background-color: alpha(@fg_color, 0.04);
+}
+
+.transfer-icon {
+    min-width: 30px;
+    min-height: 30px;
+    border-radius: 8px;
+    background-color: alpha(@accent_color, 0.16);
+    color: @accent_color;
+}
+
+.transfer-icon.out {
+    background-color: alpha(@fg_color, 0.08);
+    color: alpha(@fg_color, 0.65);
+}
+
+progressbar.thin trough,
+progressbar.thin progress {
+    min-height: 5px;
+    border-radius: 5px;
+    border: none;
+    box-shadow: none;
+    background-image: none;
+}
+
+progressbar.thin trough {
+    background-color: alpha(@fg_color, 0.1);
+}
+
+progressbar.thin progress {
+    background-color: @accent_color;
+}
+
+progressbar.thin.out progress {
+    background-color: alpha(@fg_color, 0.45);
+}
+
+progressbar.countdown progress {
+    background-color: @warning_color;
+}
+
+/* ---- recent images ---- */
+
+.thumb {
+    padding: 0;
+    border: none;
+    border-radius: 12px;
+    background-color: alpha(@fg_color, 0.07);
+    background-image: none;
+    box-shadow: none;
+    transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+.thumb:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px -10px alpha(black, 0.5);
+}
+
+.empty-note {
+    padding: 18px 16px;
+    border-radius: 12px;
+    border: 1px dashed alpha(@fg_color, 0.2);
+    color: alpha(@fg_color, 0.55);
+}
+
+/* ---- activity ---- */
+
+.segmented {
+    padding: 3px;
+    border-radius: 10px;
+    background-color: alpha(@fg_color, 0.07);
+}
+
+.segmented > button {
+    min-height: 0;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 7px;
+    background: none;
+    box-shadow: none;
+    font-weight: 600;
+    color: alpha(@fg_color, 0.65);
+}
+
+.segmented > button:hover {
+    color: @fg_color;
+}
+
+.segmented > button:checked {
+    background-color: @base_color;
+    color: @fg_color;
+    box-shadow: 0 1px 2px alpha(black, 0.12);
+}
+
+.activity {
+    background: transparent;
+}
+
+.activity > row.activity-row {
+    padding: 6px 8px;
+    border-radius: 11px;
+    background: transparent;
+}
+
+.activity > row.activity-row:hover,
+.activity > row.activity-row:focus-within {
+    background-color: alpha(@fg_color, 0.05);
+}
+
+.item-icon {
+    min-width: 38px;
+    min-height: 38px;
+    border-radius: 10px;
+    background-color: alpha(@fg_color, 0.07);
+    color: alpha(@fg_color, 0.7);
+}
+
+.item-icon.failed {
+    background-color: alpha(@error_color, 0.15);
+    color: @error_color;
+}
+
+.activity-row .link {
+    color: @accent_color;
+}
+
+.activity-row .failed-title {
+    color: alpha(@fg_color, 0.6);
+    text-decoration-line: line-through;
+}
+
+.dir-tag {
+    font-weight: 600;
+}
+
+.dir-tag.in {
+    color: @accent_color;
+}
+
+.dir-tag.out {
+    color: alpha(@fg_color, 0.6);
+}
+
+.activity-row .error-text {
+    color: @error_color;
+    font-weight: 600;
+}
+
+.row-menu {
+    opacity: 0;
+    transition: opacity 120ms ease-out;
+}
+
+.activity-row:hover .row-menu,
+.activity-row:focus-within .row-menu {
+    opacity: 1;
+}
+
+/* ---- empty state ---- */
+
+.radar-tile {
+    min-width: 56px;
+    min-height: 56px;
+    border-radius: 16px;
+    background-color: @accent_color;
+    color: @base_color;
+}
+
+.radar-wave {
+    min-width: 56px;
+    min-height: 56px;
+    border-radius: 16px;
+    animation: wave 3s ease-out infinite;
+}
+
+.radar-wave.second {
+    animation-delay: 1.5s;
+}
+
+@keyframes wave {
+    from { box-shadow: 0 0 0 0 alpha(@accent_color, 0.45); }
+    to { box-shadow: 0 0 0 38px alpha(@accent_color, 0); }
+}
+
+.empty-title {
+    font-size: 20pt;
+    font-weight: 700;
+}
+
+.step {
+    padding: 10px 14px;
+    border-radius: 12px;
+    background-color: alpha(@fg_color, 0.05);
+}
+
+.step-number {
+    min-width: 24px;
+    min-height: 24px;
+    border-radius: 99px;
+    background-color: @base_color;
+    border: 1px solid alpha(@fg_color, 0.15);
+    font-size: 9pt;
+    font-weight: 700;
+}
+
+.trouble {
+    padding: 12px 16px;
+    border-radius: 12px;
+    background-color: alpha(@fg_color, 0.05);
+}
+
+/* ---- pairing ---- */
+
+.pair-tile {
+    min-width: 52px;
+    min-height: 52px;
+    border-radius: 15px;
+    background-color: alpha(@fg_color, 0.07);
+    color: alpha(@fg_color, 0.7);
+}
+
+.pair-tile.far {
+    background-color: alpha(@accent_color, 0.16);
+    color: @accent_color;
+}
+
+.pair-line {
+    min-width: 72px;
+    min-height: 2px;
+    background-image: repeating-linear-gradient(to right, @accent_color 0px, @accent_color 6px, transparent 6px, transparent 12px);
+}
+
+.code-key {
+    min-width: 34px;
+    min-height: 46px;
+    border-radius: 8px;
+    border: 1px solid alpha(@fg_color, 0.18);
+    border-bottom-width: 3px;
+    background-color: alpha(@fg_color, 0.05);
+    font-family: monospace;
+    font-size: 18pt;
+    font-weight: 600;
+}
+
+.step-title {
+    font-weight: 600;
+}

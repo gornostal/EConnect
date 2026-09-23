@@ -73,6 +73,14 @@ namespace EConnect.Core {
             link_provider.discovery.broadcast ();
         }
 
+        /** Saves a new name for this computer and announces it. Connected
+         *  devices pick it up the next time they connect. */
+        public void rename (string name) throws Error {
+            config.save_name (name);
+            link_provider.local_info = build_local_info ();
+            link_provider.discovery.broadcast ();
+        }
+
         private DeviceInfo build_local_info () {
             var incoming = new GenericSet<string> (str_hash, str_equal);
             var outgoing = new GenericSet<string> (str_hash, str_equal);

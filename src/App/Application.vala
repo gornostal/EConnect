@@ -22,6 +22,11 @@ namespace EConnect.App {
             base.startup ();
             Granite.init ();
 
+            var css = new Gtk.CssProvider ();
+            css.load_from_resource ("/io/github/gornostal/econnect/style.css");
+            Gtk.StyleContext.add_provider_for_display (Gdk.Display.get_default (), css,
+                                                       Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+
             var granite_settings = Granite.Settings.get_default ();
             var gtk_settings = Gtk.Settings.get_default ();
             gtk_settings.gtk_application_prefer_dark_theme =
@@ -35,6 +40,30 @@ namespace EConnect.App {
             quit_action.activate.connect (quit);
             add_action (quit_action);
             set_accels_for_action ("app.quit", { "<Control>q" });
+
+            /* Targets for the buttons on "file received" notifications. */
+            var open_file = new SimpleAction ("open-file", VariantType.STRING);
+            open_file.activate.connect ((param) => {
+                Util.open_uri.begin (File.new_for_path (param.get_string ()).get_uri (), active_window, (o, res) => {
+                    try {
+                        Util.open_uri.end (res);
+                    } catch (Error e) {
+                        warning ("Cannot open %s: %s", param.get_string (), e.message);
+                    }
+                });
+            });
+            add_action (open_file);
+            var show_file = new SimpleAction ("show-file", VariantType.STRING);
+            show_file.activate.connect ((param) => {
+                Util.show_in_folder.begin (File.new_for_path (param.get_string ()), active_window, (o, res) => {
+                    try {
+                        Util.show_in_folder.end (res);
+                    } catch (Error e) {
+                        warning ("Cannot show %s: %s", param.get_string (), e.message);
+                    }
+                });
+            });
+            add_action (show_file);
 
             try {
                 var config = new Core.Config ();
@@ -71,10 +100,20 @@ namespace EConnect.App {
             });
             share.file_received.connect ((d, file) => {
                 history.add (d.id, new Core.HistoryItem (Core.HistoryKind.FILE, file.get_path (), true));
+                var path = new Variant.string (file.get_path ());
                 var n = new Notification (_("Received from %s").printf (d.name));
                 n.set_body (file.get_basename ());
                 n.set_icon (new ThemedIcon ("document-save"));
+                n.set_default_action_and_target_value ("app.open-file", path);
+                n.add_button_with_target_value (_("Show in Folder"), "app.show-file", path);
+                n.add_button_with_target_value (_("Open"), "app.open-file", path);
                 send_notification ("file-" + file.get_basename (), n);
+            });
+            share.file_failed.connect ((d, filename, reason) => {
+                var item = new Core.HistoryItem (Core.HistoryKind.FILE,
+                                                 share.download_dir.get_child (filename).get_path (), true);
+                item.error = reason;
+                history.add (d.id, item);
             });
         }
 

@@ -136,7 +136,8 @@ namespace EConnect.Plugins {
             return device.send_packet (new Core.Packet (Core.Packet.TYPE_SHARE_REQUEST).set_string ("url", url));
         }
 
-        public async void send_file (Core.Device device, File file, Cancellable? cancel = null) throws Error {
+        public async void send_file (Core.Device device, File file, Cancellable? cancel = null,
+                                     Core.ProgressFunc? progress = null) throws Error {
             var link = device.link;
             if (link == null) {
                 throw new IOError.NOT_CONNECTED ("%s is not reachable", device.name);
@@ -156,7 +157,7 @@ namespace EConnect.Plugins {
                 packet.set_int ("creationTime", (int64) fi.get_attribute_uint64 (FileAttribute.TIME_CREATED) * 1000);
             }
             var input = yield file.read_async (Priority.DEFAULT, cancel);
-            yield link.send_payload_packet (packet, input, size, cancel);
+            yield link.send_payload_packet (packet, input, size, cancel, progress);
             GLib.info ("Sent %s to %s", file.get_path (), device.name);
         }
     }

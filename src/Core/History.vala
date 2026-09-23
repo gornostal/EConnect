@@ -1,8 +1,9 @@
 /*
  * SPDX-License-Identifier: MIT
  *
- * Per-device log of received items (text, URLs, files), persisted as JSON in
- * <config>/history/<deviceId>.json. Feeds the "recent images" preview.
+ * Per-device log of items shared in either direction (text, URLs, files),
+ * persisted as JSON in <config>/history/<deviceId>.json. Feeds the Activity
+ * list and the "recent images" preview.
  */
 namespace EConnect.Core {
 
@@ -31,6 +32,8 @@ namespace EConnect.Core {
         public string value { get; set; }          // text, url, or file path
         public int64 time_ms { get; set; }
         public bool incoming { get; set; default = true; }
+        /** Why a transfer failed, or null when it went through. */
+        public string? error { get; set; default = null; }
 
         public HistoryItem (HistoryKind kind, string value, bool incoming) {
             this.kind = kind;
@@ -39,9 +42,13 @@ namespace EConnect.Core {
             time_ms = GLib.get_real_time () / 1000;
         }
 
+        public bool failed {
+            get { return error != null; }
+        }
+
         public bool is_image {
             get {
-                if (kind != HistoryKind.FILE) {
+                if (kind != HistoryKind.FILE || failed) {
                     return false;
                 }
                 bool uncertain;
@@ -93,6 +100,42 @@ namespace EConnect.Core {
             item_added (device_id, item);
         }
 
+        public void remove (string device_id, HistoryItem item) {
+            var store = for_device (device_id);
+            uint pos;
+            if (store.find (item, out pos)) {
+                store.remove (pos);
+                save (device_id, store);
+            }
+        }
+
+        /** Empties the list and returns what was in it, so it can be restored. */
+        public HistoryItem[] clear (string device_id) {
+            var store = for_device (device_id);
+            HistoryItem[] removed = {};
+            for (uint i = 0; i < store.get_n_items (); i++) {
+                removed += (HistoryItem) store.get_item (i);
+            }
+            store.remove_all ();
+            save (device_id, store);
+            return removed;
+        }
+
+        /** Puts previously removed items back, keeping newest first. */
+        public void restore (string device_id, HistoryItem[] items) {
+            var store = for_device (device_id);
+            foreach (var item in items) {
+                store.insert_sorted (item, (a, b) => {
+                    int64 d = ((HistoryItem) b).time_ms - ((HistoryItem) a).time_ms;
+                    return (int) d.clamp (-1, 1);
+                });
+            }
+            while (store.get_n_items () > MAX_ITEMS) {
+                store.remove (store.get_n_items () - 1);
+            }
+            save (device_id, store);
+        }
+
         /** Newest image files that still exist, up to `limit`. */
         public HistoryItem[] recent_images (string device_id, uint limit) {
             HistoryItem[] result = {};
@@ -132,6 +175,9 @@ namespace EConnect.Core {
                     if (o.has_member ("time")) {
                         item.time_ms = o.get_int_member ("time");
                     }
+                    if (o.has_member ("error")) {
+                        item.error = o.get_string_member ("error");
+                    }
                     store.append (item);
                 });
             } catch (Error e) {
@@ -148,6 +194,9 @@ namespace EConnect.Core {
                 o.set_string_member ("value", item.value);
                 o.set_int_member ("time", item.time_ms);
                 o.set_boolean_member ("incoming", item.incoming);
+                if (item.error != null) {
+                    o.set_string_member ("error", item.error);
+                }
                 array.add_object_element (o);
             }
             var root = new Json.Node (Json.NodeType.ARRAY);
