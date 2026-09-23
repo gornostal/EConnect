@@ -1,7 +1,7 @@
 project(
     'io.github.gornostal.econnect',
     'vala', 'c',
-    version: '0.1.0',
+    version: '1.0.1',
     meson_version: '>= 0.61',
     license: 'MIT',
 )
