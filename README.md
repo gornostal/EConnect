@@ -1,5 +1,7 @@
 # EConnect
 
+![EConnect: KDE Connect for elementary OS](data/banner.png)
+
 A small GTK4/Granite app for elementary OS that talks the KDE Connect protocol, so the stock KDE Connect app on your Android or iOS phone works with it unchanged.
 
 ## Features

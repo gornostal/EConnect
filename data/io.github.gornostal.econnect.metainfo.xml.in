@@ -36,15 +36,11 @@
   <screenshots>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/gornostal/EConnect/main/data/screenshots/devices.png</image>
-      <caption>Paired devices and everything recently shared</caption>
+      <caption>A paired phone, its newest photos and everything recently shared</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/gornostal/EConnect/main/data/screenshots/pairing.png</image>
-      <caption>Confirming a pairing code</caption>
-    </screenshot>
-    <screenshot>
-      <image>https://raw.githubusercontent.com/gornostal/EConnect/main/data/screenshots/gallery.png</image>
-      <caption>The newest photos from a phone</caption>
+      <image>https://raw.githubusercontent.com/gornostal/EConnect/main/data/screenshots/discovery.png</image>
+      <caption>Finding a phone on the same network</caption>
     </screenshot>
   </screenshots>
 

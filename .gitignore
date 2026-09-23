@@ -2,3 +2,5 @@ build/
 builddir/
 *.swp
 TODO.md
+build-flatpak/
+.flatpak-builder/
