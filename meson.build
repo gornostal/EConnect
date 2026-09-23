@@ -14,6 +14,18 @@ add_project_arguments(
     '-DG_LOG_DOMAIN="EConnect"',
     language: 'c',
 )
+# valac-generated C trips these routinely; silence them so real warnings stand out.
+add_project_arguments(
+    meson.get_compiler('c').get_supported_arguments(
+        '-Wno-unused-but-set-variable',
+        '-Wno-unused-variable',
+        '-Wno-unused-function',
+        '-Wno-discarded-qualifiers',
+        '-Wno-incompatible-pointer-types',
+        '-Wno-address',
+    ),
+    language: 'c',
+)
 add_project_arguments(
     '--target-glib=2.76',
     '--enable-experimental',

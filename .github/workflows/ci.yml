@@ -12,11 +12,11 @@ concurrency:
 jobs:
   build:
     name: Build and validate metadata
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container:
       image: ghcr.io/elementary/docker:stable
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install dependencies
         run: |
@@ -46,14 +46,16 @@ jobs:
 
   flatpak:
     name: Flatpak build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
+      # elfutils provides eu-strip/eu-elfcompress, which flatpak-builder needs
+      # to split debug info out of the binary.
       - name: Install flatpak-builder
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends flatpak flatpak-builder
+          sudo apt-get install -y --no-install-recommends elfutils flatpak flatpak-builder
 
       - name: Add the AppCenter remote
         run: |
