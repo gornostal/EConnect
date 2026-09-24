@@ -40,7 +40,7 @@ namespace EConnect.Core {
                 device_name = DeviceInfo.filter_name (Environment.get_host_name ());
             }
             if (device_name == "") {
-                device_name = "elementary OS";
+                device_name = "Linux";
             }
         }
 

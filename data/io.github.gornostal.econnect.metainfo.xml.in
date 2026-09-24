@@ -84,7 +84,12 @@
   <content_rating type="oars-1.1" />
 
   <releases>
-    <release version="@VERSION@" date="2026-09-22">
+    <release version="1.0.2" date="2026-09-23">
+      <description>
+        <p>Packaged for Flathub.</p>
+      </description>
+    </release>
+    <release version="1.0.1" date="2026-09-22">
       <description>
         <p>First release.</p>
         <ul>

@@ -18,7 +18,7 @@ metainfo_file = configure_file(
     install_dir: get_option('datadir') / 'metainfo',
 )
 
-# 32, 48, 64 and 128 are what AppCenter requires; 256 is there for HiDPI.
+# 256 is the minimum size Flathub accepts; the smaller ones are for panels and lists.
 foreach size : ['32', '48', '64', '128', '256']
     install_data(
         'icons' / size / app_id + '.png',
@@ -26,12 +26,17 @@ foreach size : ['32', '48', '64', '128', '256']
     )
 endforeach
 
+install_data(
+    meson.project_source_root() / 'LICENSE',
+    install_dir: get_option('datadir') / 'licenses' / app_id,
+)
+
 gnome.post_install(
     gtk_update_icon_cache: true,
     update_desktop_database: true,
 )
 
-# The same checks AppCenter runs on submission, so a broken desktop entry or
+# The same checks Flathub runs on submission, so a broken desktop entry or
 # metainfo file fails here rather than in review.
 desktop_file_validate = find_program('desktop-file-validate', required: false)
 if desktop_file_validate.found()

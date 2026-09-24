@@ -1,10 +1,17 @@
-# Flatpak manifest used by AppCenter to build and distribute EConnect.
-# Build it the same way locally with:
-#   flatpak-builder --user --install --force-clean build-flatpak io.github.gornostal.econnect.yml
+# Flatpak manifest for local and CI builds. Build and install it with:
+#   flatpak run org.flatpak.Builder --user --install --force-clean \
+#     --install-deps-from=flathub build-flatpak io.github.gornostal.econnect.yml
 id: io.github.gornostal.econnect
-runtime: io.elementary.Platform
-runtime-version: '8.2'
-sdk: io.elementary.Sdk
+
+# Granite, the elementary stylesheet and icons come from the BaseApp, so the
+# app looks the same on elementary OS while running on the GNOME runtime.
+base: io.elementary.BaseApp
+base-version: tanit-26.08
+
+runtime: org.gnome.Platform
+runtime-version: '51'
+sdk: org.gnome.Sdk
+
 command: io.github.gornostal.econnect
 
 finish-args:
@@ -28,9 +35,21 @@ finish-args:
   - --filesystem=xdg-run/gvfsd
   - --talk-name=org.gtk.vfs.*
 
+cleanup:
+  - /include
+  - /lib/girepository-1.0
+  - /lib/pkgconfig
+  - /share/gir-1.0
+  - /share/vala
+
+cleanup-commands:
+  - /app/cleanup-BaseApp.sh
+
 modules:
   - name: econnect
     buildsystem: meson
+    # Runs desktop-file-validate and appstreamcli validate after building.
+    run-tests: true
     config-opts:
       # The headless test tool is a development aid, not part of the app.
       - -Dcli=false

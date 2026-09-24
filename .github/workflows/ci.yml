@@ -10,60 +10,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build and validate metadata
-    runs-on: ubuntu-24.04
-    container:
-      image: ghcr.io/elementary/docker:stable
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Install dependencies
-        run: |
-          apt-get update
-          apt-get install -y --no-install-recommends \
-            appstream \
-            desktop-file-utils \
-            git \
-            libgnutls28-dev \
-            libgranite-7-dev \
-            libgtk-4-dev \
-            libjson-glib-dev \
-            meson \
-            ninja-build \
-            valac
-
-      - name: Configure
-        run: meson setup build
-
-      - name: Build
-        run: ninja -C build
-
-      # Runs desktop-file-validate and appstreamcli validate, the same checks
-      # AppCenter applies on submission.
-      - name: Test
-        run: meson test -C build --print-errorlogs
-
   flatpak:
     name: Flatpak build
     runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-51
+      options: --privileged
     steps:
       - uses: actions/checkout@v5
 
-      # elfutils provides eu-strip/eu-elfcompress, which flatpak-builder needs
-      # to split debug info out of the binary.
-      - name: Install flatpak-builder
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends elfutils flatpak flatpak-builder
-
-      - name: Add the AppCenter remote
-        run: |
-          flatpak remote-add --if-not-exists --user \
-            appcenter https://flatpak.elementaryos.org/repo.flatpakrepo
-
       - name: Build the bundle
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: econnect.flatpak
+          manifest-path: io.github.gornostal.econnect.yml
+          cache-key: flatpak-builder-${{ github.sha }}
+
+      # The same linter Flathub runs on submission.
+      - name: Lint manifest
         run: |
-          flatpak-builder --user --disable-rofiles-fuse --force-clean \
-            --install-deps-from=appcenter \
-            --repo=repo build-flatpak io.github.gornostal.econnect.yml
+          flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          flatpak install --user -y --noninteractive flathub org.flatpak.Builder
+          flatpak run --command=flatpak-builder-lint org.flatpak.Builder manifest io.github.gornostal.econnect.yml

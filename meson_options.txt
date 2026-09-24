@@ -1,2 +1,2 @@
-option('gui', type: 'boolean', value: true, description: 'Build the GTK4/Granite desktop application')
+option('gui', type: 'boolean', value: true, description: 'Build the GTK4 desktop application')
 option('cli', type: 'boolean', value: true, description: 'Build the headless econnect-cli test tool')

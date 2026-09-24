@@ -1,8 +1,8 @@
 # EConnect
 
-![EConnect: KDE Connect for elementary OS](data/banner.png)
+![EConnect](data/banner.png)
 
-A small GTK4/Granite app for elementary OS that talks the KDE Connect protocol, so the stock KDE Connect app on your Android or iOS phone works with it unchanged.
+A small GTK4 app that talks the KDE Connect protocol, so the stock KDE Connect app on your Android or iOS phone works with it unchanged.
 
 ## Features
 
@@ -15,18 +15,25 @@ A small GTK4/Granite app for elementary OS that talks the KDE Connect protocol, 
 
 ## Build and install
 
-Dependencies (elementary OS 8 / Ubuntu):
+EConnect is built as a Flatpak. You need Flatpak with the Flathub remote, and Flatpak Builder:
 
 ```sh
-sudo apt install meson valac libgtk-4-dev libgranite-7-dev libjson-glib-dev libgnutls28-dev
+flatpak install --user flathub org.flatpak.Builder
 ```
 
-Build and install:
+Get the source:
 
 ```sh
-meson setup build
-ninja -C build
-sudo ninja -C build install
+git clone https://github.com/gornostal/EConnect.git
+cd EConnect
 ```
 
-Run with `io.github.gornostal.econnect`, or from the applications menu. A headless test tool, `econnect-cli`, is built alongside it.
+Build and install from the repository root:
+
+```sh
+flatpak run org.flatpak.Builder --user --install --force-clean --install-deps-from=flathub build-flatpak io.github.gornostal.econnect.yml
+```
+
+Run with `flatpak run io.github.gornostal.econnect`, or from the applications menu.
+
+For development without Flatpak, install meson, valac and the GTK 4, Granite 7, json-glib and GnuTLS development packages, then run `meson setup build && ninja -C build`. This also builds `econnect-cli`, a headless test tool.
