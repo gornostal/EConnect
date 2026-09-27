@@ -47,6 +47,8 @@ namespace EConnect.App {
     public class Gallery : Object {
         public const uint MAX_IMAGES = 5;
         public const uint IMAGE_LIMIT_PER_FOLDER = 40;
+        /* A phone with the SFTP plugin disabled drops the request silently. */
+        private const uint REQUEST_TIMEOUT_SECONDS = 15;
 
         private const string[] CANDIDATE_FOLDERS = {
             "DCIM/Camera", "DCIM/Screenshots", "Pictures/Screenshots", "Pictures", "Download"
@@ -57,6 +59,7 @@ namespace EConnect.App {
         private HashTable<string, GenericArray<Core.HistoryItem>> items =
             new HashTable<string, GenericArray<Core.HistoryItem>> (str_hash, str_equal);
         private GenericSet<string> busy = new GenericSet<string> (str_hash, str_equal);
+        private HashTable<string, uint> pending_requests = new HashTable<string, uint> (str_hash, str_equal);
 
         public signal void updated (string device_id);
         public signal void failed (string device_id, string reason);
@@ -65,8 +68,12 @@ namespace EConnect.App {
         public Gallery (Application app) {
             this.app = app;
             cache_root = File.new_for_path (Path.build_filename (Environment.get_user_cache_dir (), APP_ID, "gallery"));
-            app.sftp.ready.connect ((device, info) => fetch.begin (device, info));
+            app.sftp.ready.connect ((device, info) => {
+                cancel_request_timeout (device.id);
+                fetch.begin (device, info);
+            });
             app.sftp.failed.connect ((device, reason) => {
+                cancel_request_timeout (device.id);
                 busy.remove (device.id);
                 busy_changed (device.id, false);
                 failed (device.id, reason);
@@ -108,7 +115,22 @@ namespace EConnect.App {
                 busy_changed (device.id, false);
                 return false;
             }
+            string id = device.id;
+            pending_requests.insert (id, Timeout.add_seconds (REQUEST_TIMEOUT_SECONDS, () => {
+                pending_requests.remove (id);
+                busy.remove (id);
+                busy_changed (id, false);
+                failed (id, _("The phone did not respond. In KDE Connect on the phone, make sure Filesystem expose is enabled for this computer."));
+                return Source.REMOVE;
+            }));
             return true;
+        }
+
+        private void cancel_request_timeout (string device_id) {
+            if (device_id in pending_requests) {
+                Source.remove (pending_requests[device_id]);
+                pending_requests.remove (device_id);
+            }
         }
 
         private File cache_dir (string device_id) {
